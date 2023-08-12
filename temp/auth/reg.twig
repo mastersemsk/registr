@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>Регистрация</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/sign-in.css" rel="stylesheet">
+  </head>
+  <body class="d-flex align-items-center py-4 bg-body-tertiary">   
+<main class="form-signin w-100 m-auto">
+  <form action="" method="post">
+    <h1 class="h3 mb-3 fw-normal">Регистрация клиентов</h1>
+    {% if error %}
+	<div class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+	{% endif %}
+	<input type="hidden" value="{% if code %}{{ code }}{% endif %}" name="code">
+	<div class="form-floating">
+      <input type="text" name="imia" class="form-control" id="floatingReg" placeholder="Ваше имя" pattern="^[0-9a-zа-яA-ZА-ЯЁё]{4,25}$" title="Только буквы и цифры 4 - 25" required autofocus>
+      <label for="floatingReg">Имя</label>
+    </div>
+    <div class="form-floating">
+      <input type="email" name="login" class="form-control" id="floatingInput" placeholder="user@mail.ru" value="{% if oldemail %}{{ oldemail }}{% endif %}" title="Отправим email активации" required>
+      <label for="floatingInput">Email</label>
+    </div>
+    <div class="form-floating">
+      <input type="password" name="parol" class="form-control" id="floatingPassword" placeholder="Пароль" title="от 8 символов" maxlength="25" required>
+      <label for="floatingPassword">Пароль</label>
+    </div>
+    <div class="form-floating">
+      <input type="password" name="parol1" class="form-control" id="floatingPasswordR" placeholder="Пароль" title="от 8 символов" maxlength="25" required>
+      <label for="floatingPasswordR">Повторить пароль</label>
+    </div>
+    
+	<button class="btn btn-primary w-100 py-2" type="submit">Регистрация</button>
+	<div class="mb-2">
+	    <a class="underline text-sm" href="/login">Уже зарегистрирован?</a>
+	</div>
+  </form>
+</main>
+<script src="/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
