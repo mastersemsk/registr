@@ -5,8 +5,8 @@ use MySQLi;
 
 class Model {
 const USER = 'root';
-const PASS = 'root';
-const BAZA = 'laravel';
+const PASS = '';
+const BAZA = '';
 const BAZA_URL = 'localhost';
 	
 	public static function dbs ($data) {
@@ -18,7 +18,7 @@ const BAZA_URL = 'localhost';
 	return $result;
 	}
 	/*
-	 Запись в базу с выводом номера AUTO_INCREMENT
+	 Г‡Г ГЇГЁГ±Гј Гў ГЎГ Г§Гі Г± ГўГ»ГўГ®Г¤Г®Г¬ Г­Г®Г¬ГҐГ°Г  AUTO_INCREMENT
 	*/
 	public static function dbin ($data) {
 	mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
