@@ -1,8 +1,8 @@
 ## About Admin Panel
-Это вполне рабочий модуль авторизации на сайте. Работает на Open Sever. Через компосер установил модули  twig, fast-route. 
-Использовал модуль PHPMailer.
-Таблица 
-для хранения юзеров примерно такая
+Р­С‚Рѕ РІРїРѕР»РЅРµ СЂР°Р±РѕС‡РёР№ РјРѕРґСѓР»СЊ Р°РІС‚РѕСЂРёР·Р°С†РёРё РЅР° СЃР°Р№С‚Рµ. Р Р°Р±РѕС‚Р°РµС‚ РЅР° Open Sever. Р§РµСЂРµР· РєРѕРјРїРѕСЃРµСЂ СѓСЃС‚Р°РЅРѕРІРёР» РјРѕРґСѓР»Рё  twig, fast-route. 
+РСЃРїРѕР»СЊР·РѕРІР°Р» РјРѕРґСѓР»СЊ PHPMailer.
+РўР°Р±Р»РёС†Р° 
+РґР»СЏ С…СЂР°РЅРµРЅРёСЏ СЋР·РµСЂРѕРІ РїСЂРёРјРµСЂРЅРѕ С‚Р°РєР°СЏ
 CREATE TABLE `usera` (
   `id` bigint UNSIGNED NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE `usera` (
   `up_creat` timestamp NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-Отвечу на вопросы: romanenko@inbox.ru
+РћС‚РІРµС‡Сѓ РЅР° РІРѕРїСЂРѕСЃС‹: romanenko@inbox.ru
 
 ## License
 
