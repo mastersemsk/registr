@@ -18,7 +18,7 @@ const BAZA_URL = 'localhost';
 	return $result;
 	}
 	/*
-	 Çàïèñü â áàçó ñ âûâîäîì íîìåðà AUTO_INCREMENT
+	 добавляем  insert_id
 	*/
 	public static function dbin ($data) {
 	mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
