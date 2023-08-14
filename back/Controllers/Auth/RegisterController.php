@@ -4,16 +4,15 @@ namespace Controllers\Auth;
 use Controllers\AppController;
 use Models\User;
 use Content\PHPMailer\SendMail;
-
+use Content\Hash;
 
 class RegisterController extends AppController 
 {
 	protected $id;
-	protected $size_code = 21;
 	
 	public function reg($error=null,$oldemail=null)
     {
-        echo $this->twig()->render('/auth/reg.twig',['error' => $error,'oldemail' => $oldemail,'code' => $this->sescode($this->size_code)]); die();
+        echo $this->twig()->render('/auth/reg.twig',['error' => $error,'oldemail' => $oldemail,'code' => Hash::code()]); die();
     }
 	
 	/*
@@ -51,7 +50,7 @@ class RegisterController extends AppController
 	    /* 
 		  Записываем в базу
 		*/
-		$this->id = User::creat(['code' => $_POST['code'],'imia' => $_POST['imia'],'login' => $_POST['login'],'code' => $_POST['code'],'parol' => password_hash($_POST['parol'], PASSWORD_DEFAULT)]);
+		$this->id = User::creat(['code' => $_POST['code'],'imia' => $_POST['imia'],'login' => $_POST['login'],'code' => $_POST['code'],'parol' => Hash::creatPass($_POST['parol'])]);
 		if (empty($this->id)) {
 		    $this->reg('Ошибка записи!');
 	    }
@@ -70,7 +69,7 @@ class RegisterController extends AppController
 	public function prov_email($id,$token) {
 		//http://e-pos/register/3/HX9yVbNVtICf8qSaIwQ-q
 		$res_token = User::verifer_token($id);
-		if (empty($res_token) || empty($token) || mb_strlen($token,'UTF-8') != $this->size_code) {
+		if (empty($res_token) || empty($token) || mb_strlen($token,'UTF-8') != Hash::$size) {
 			 $this->reg('Регистрации не существует или вы уже активировали ссылку');
 		}
 		if (empty($res_token[0]['token']) || $res_token[0]['token'] !== $token) {

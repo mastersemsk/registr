@@ -3,6 +3,7 @@ namespace Controllers\Auth;
 
 use Controllers\AppController;
 use Controllers\Auth\PanelController;
+use Content\Hash;
 use Models\User;
 
 class AuthController extends AppController 
@@ -10,7 +11,7 @@ class AuthController extends AppController
 	
 	public function in($error=null,$oldemail=null) 
 	{
-		echo $this->twig()->render('/auth/login.twig',['error' => $error,'oldemail' => $oldemail,'code' => $this->sescode(21)]); die();
+		echo $this->twig()->render('/auth/login.twig',['error' => $error,'oldemail' => $oldemail,'code' => Hash::code()]); die();
 	}
 	
 	public function prov() 
@@ -29,12 +30,16 @@ class AuthController extends AppController
 			$this->in('Пароль от 8 латинских символов, цифры, большие буквы и спец символы.',$_POST['login']);
 		}
 		
-		if (empty(User::auth($_POST['login'],$_POST['parol']))) {
-			 $this->in('Логин или пароль не верны!',$_POST['login']);
+		$rows = User::prov_email($_POST['login']);
+		if (empty($rows)) {
+			$this->in('С таким email пользователя нет!',$_POST['login']);
 		}
 		
-		$verified_mail = User::prov_email($_POST['login']);
-		if (empty($verified_mail[0]['verified'])) {
+		if (empty(Hash::verfPass($_POST['parol'],$rows[0]['password']))) {
+			$this->in('Неверный пароль!',$_POST['login']);
+		}
+		
+		if (empty($rows[0]['verified'])) {
 			$this->in('Вы не прошли проверку email! ',$_POST['login']);
 		}
 		
