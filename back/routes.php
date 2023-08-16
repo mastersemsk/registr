@@ -16,6 +16,7 @@ $r->addRoute('GET', '/register', [RegisterController::class, 'reg']);
 $r->addRoute('POST', '/register', [RegisterController::class, 'prov']);
 $r->addRoute('GET', '/register/{id:\d+}/{token}', [RegisterController::class, 'prov_email']);
 $r->addRoute('GET', '/forgot-password', [PasswordResetController::class, 'form_pass']);
+$r->addRoute('POST', '/forgot-password', [PasswordResetController::class, 'send_pass']);
 $r->addRoute('GET', '/panel/requisites', [PanelController::class, 'requisites']);
 $r->addRoute('GET', '/panel/report', [PanelController::class, 'report']);
 // {id} must be a number (\d+)

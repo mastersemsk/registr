@@ -27,4 +27,33 @@ class Hash
 	{
 		return password_hash($parol,PASSWORD_DEFAULT);
 	}
+	// генерация пароля
+    public static function generate_password($symbolsCount)
+    {
+      $arr = [
+        ['a','b','c','d','e','f',
+            'g','h','i','j','k','l',
+            'm','n','o','p','r','s',
+            't','u','v','x','y','z'],
+        ['A','B','C','D','E','F',
+            'G','H','I','J','K','L',
+            'M','N','O','P','R','S',
+            'T','U','V','X','Y','Z'],
+        ['1','2','3','4','5','6',
+            '7','8','9','0']
+        ];
+ 
+        $chars = array_map(function($group) {
+        return $group[array_rand($group)];
+        }, $arr);
+ 
+        for($i = count($chars) - 1; $i < $symbolsCount; $i++) {
+            $group = $arr[array_rand($arr)];
+            $chars[] = $group[array_rand($group)];
+        }
+ 
+        shuffle($chars);
+    
+        return implode('', $chars);
+    }
 }

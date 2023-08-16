@@ -9,7 +9,7 @@ class User extends Model
 	*/
 	public static function prov_email($email) 
 	{
-		$result = Model::dbs("SELECT `verified`,`password`,`token` FROM `usera` WHERE `email` = '".$email."' LIMIT 1");
+		$result = Model::dbs("SELECT `name`,`verified`,`password`,`token` FROM `usera` WHERE `email` = '".$email."' LIMIT 1");
 		$rows = $result->fetch_all(MYSQLI_ASSOC);
 		return $rows;
 	}
@@ -36,5 +36,10 @@ class User extends Model
 	public static function up_token($id) 
 	{
 		return Model::dbs("UPDATE `usera` SET `verified` = '1' WHERE `id` = ".$id);
+	}
+	
+	public static function up_pass($password,$email) 
+	{
+		return Model::dbs("UPDATE `usera` SET `password` = '".$password."' WHERE `email` = '".$email."');
 	}
 }
