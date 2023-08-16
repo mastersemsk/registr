@@ -47,7 +47,7 @@ class Hash
         return $group[array_rand($group)];
         }, $arr);
  
-        for($i = count($chars) - 1; $i < $symbolsCount; $i++) {
+        for($i = count($chars); $i < $symbolsCount; $i++) {
             $group = $arr[array_rand($arr)];
             $chars[] = $group[array_rand($group)];
         }
