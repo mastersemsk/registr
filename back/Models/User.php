@@ -40,6 +40,7 @@ class User extends Model
 	
 	public static function up_pass($password,$email) 
 	{
-		return Model::dbs("UPDATE `usera` SET `password` = '".$password."' WHERE `email` = '".$email."');
+		return Model::dbs("UPDATE `usera` SET `password` = '".$password."' WHERE `email` = '".$email."'");
 	}
+
 }

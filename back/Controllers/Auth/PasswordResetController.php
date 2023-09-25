@@ -16,29 +16,29 @@ class PasswordResetController extends AppController
 	public function send_pass()
 	{
 		if (empty($_POST['login']) || filter_var($_POST['login'], FILTER_VALIDATE_EMAIL) === false) {
-			$this->form_pass('Ошибка ввода e-mail!');
+			$this->form_pass('РћС€РёР±РєР° РІРІРѕРґР° e-mail!');
 		}
 		
 		$prov = User::prov_email($_POST['login']);
 		if (empty($prov)) {
-			$this->form_pass('Пользователь с таким email не зарегистрирован!');
+			$this->form_pass('РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃ С‚Р°РєРёРј email РЅРµ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅ!');
 		}
 		
 		if (empty($prov[0]['verified'])) {
-			$this->form_pass('Ваш email не подтверждён!');
+			$this->form_pass('Р’Р°С€ email РЅРµ РїРѕРґС‚РІРµСЂР¶РґС‘РЅ!');
 		}
 		 $new_pass = Hash::generate_password(10);
 		 $new_pass_hazh = Hash::creatPass($new_pass);
 		 User::up_pass($new_pass_hazh,$_POST['login'])
 		$send = new SendMail;
-		$text_pisma = 'Здравствуйте, <b>'.$prov[0]['name'].'</b>. <br>Спасибо за регистрацию на нашем сервисе. Вы запросили изменение пароля. 
-		Это ваш новый пароль '.$new_pass;
-		$zagolovok = 'Восстановление пароля WMsemsk';
+		$text_pisma = 'Р—РґСЂР°РІСЃС‚РІСѓР№С‚Рµ, <b>'.$prov[0]['name'].'</b>. <br>РЎРїР°СЃРёР±Рѕ Р·Р° СЂРµРіРёСЃС‚СЂР°С†РёСЋ РЅР° РЅР°С€РµРј СЃРµСЂРІРёСЃРµ. Р’С‹ Р·Р°РїСЂРѕСЃРёР»Рё РёР·РјРµРЅРµРЅРёРµ РїР°СЂРѕР»СЏ. 
+		Р­С‚Рѕ РІР°С€ РЅРѕРІС‹Р№ РїР°СЂРѕР»СЊ '.$new_pass;
+		$zagolovok = 'Р’РѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РїР°СЂРѕР»СЏ WMsemsk';
 		$otvet = $send->send($_POST['login'],$text_pisma,$zagolovok,$prov[0]['name']);
 		if (!empty($otvet)) {
-			$this->form_pass('Мы отправили письмо на '.$_POST['login'].'. '.$otvet);
+			$this->form_pass('РњС‹ РѕС‚РїСЂР°РІРёР»Рё РїРёСЃСЊРјРѕ РЅР° '.$_POST['login'].'. '.$otvet);
 		}
 		
-		$this->form_pass($prov[0]['name'].', Вам отправлен новый пароль, на адрес '.$_POST['login'].'!');
+		$this->form_pass($prov[0]['name'].', Р’Р°Рј РѕС‚РїСЂР°РІР»РµРЅ РЅРѕРІС‹Р№ РїР°СЂРѕР»СЊ, РЅР° Р°РґСЂРµСЃ '.$_POST['login'].'!');
 	}
 }
