@@ -50,7 +50,7 @@ class RegisterController extends AppController
 	    /* 
 		  Записываем в базу
 		*/
-		$this->id = User::creat(['code' => $_POST['code'],'imia' => $_POST['imia'],'login' => $_POST['login'],'code' => $_POST['code'],'parol' => Hash::creatPass($_POST['parol'])]);
+		$this->id = User::creat(['code' => $_POST['code'],'imia' => $_POST['imia'],'login' => $_POST['login'],'parol' => Hash::creatPass($_POST['parol'])]);
 		if (empty($this->id)) {
 		    $this->reg('Ошибка записи!');
 	    }

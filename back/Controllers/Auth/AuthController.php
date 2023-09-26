@@ -2,7 +2,6 @@
 namespace Controllers\Auth;
 
 use Controllers\AppController;
-use Controllers\Auth\PanelController;
 use Content\Hash;
 use Models\User;
 
