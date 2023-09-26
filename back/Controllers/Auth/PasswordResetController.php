@@ -29,7 +29,7 @@ class PasswordResetController extends AppController
 		}
 		 $new_pass = Hash::generate_password(10);
 		 $new_pass_hazh = Hash::creatPass($new_pass);
-		 User::up_pass($new_pass_hazh,$_POST['login'])
+		 User::up_pass($new_pass_hazh,$_POST['login']);
 		$send = new SendMail;
 		$text_pisma = 'Здравствуйте, <b>'.$prov[0]['name'].'</b>. <br>Спасибо за регистрацию на нашем сервисе. Вы запросили изменение пароля. 
 		Это ваш новый пароль '.$new_pass;
