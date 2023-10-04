@@ -8,6 +8,8 @@ use Twig\Loader\FilesystemLoader;
 
 class AppController
 {
+	const NAME = 'EPOS';
+	const URL = 'http://e-pos/';
 	public function twig () 
 	{
 	

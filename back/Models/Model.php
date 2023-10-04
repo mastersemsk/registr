@@ -5,8 +5,8 @@ use MySQLi;
 
 class Model {
 const USER = 'root';
-const PASS = '';
-const BAZA = '';
+const PASS = 'root';
+const BAZA = 'laravel';
 const BAZA_URL = 'localhost';
 	
 	public static function dbs ($data) {

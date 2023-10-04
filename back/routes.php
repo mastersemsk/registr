@@ -1,11 +1,12 @@
 <?php
-use FastRoute\RouteCollector;
-// определяем контроллеры вызываемые по определённым путям
-use Controllers\HomeController;
 use Controllers\Auth\AuthController;
-use Controllers\Auth\RegisterController;
+use Controllers\Auth\DiskController;
 use Controllers\Auth\PanelController;
 use Controllers\Auth\PasswordResetController;
+use Controllers\Auth\RegisterController;
+// определяем контроллеры вызываемые по определённым путям
+use Controllers\HomeController;
+use FastRoute\RouteCollector;
 
 return function (RouteCollector $r) {
 $r->addRoute('GET', '/', [HomeController::class, 'index']);
@@ -19,6 +20,9 @@ $r->addRoute('GET', '/forgot-password', [PasswordResetController::class, 'form_p
 $r->addRoute('POST', '/forgot-password', [PasswordResetController::class, 'send_pass']);
 $r->addRoute('GET', '/panel/requisites', [PanelController::class, 'requisites']);
 $r->addRoute('GET', '/panel/report', [PanelController::class, 'report']);
+$r->addRoute('GET', '/panel/integrations', [DiskController::class, 'index']);
+$r->addRoute('POST', '/panel/integrations', [DiskController::class, 'zapros_token']);
+$r->addRoute('GET', '/panel/token', [DiskController::class, 'otvet_token']);
 // {id} must be a number (\d+)
 //$r->addRoute('GET', '/user/{id:\d+}', 'get_user_handler');
 // The /{title} suffix is optional
