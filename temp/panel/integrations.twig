@@ -29,23 +29,46 @@
       </div>
 
       <h2>Загрузка файлов Яндекс|Google Disk</h2>
+      {% if result.token %}
+      <p>Загрузка файла на Яндекс Диск</p>
+      <form action="" method="post">
+      <div class="mb-3">
+        <label for="yandexFile" class="form-label">Выбрать файл для загрузки</label>
+        <input class="form-control" type="file" id="yandexFile">
+      </div>
+      <button type="submit" class="btn btn-primary">Загрузить</button>
+      </form>
+       <p>Загрузка файла на Google Disk</p>
+      <form action="" method="post">
+      <div class="mb-3">
+        <label for="googleFile" class="form-label">Выбрать файл для загрузки</label>
+        <input class="form-control" type="file" id="googleFile">
+      </div>
+      <button type="submit" class="btn btn-primary">Загрузить</button>
+      </form>     
+      {% else %}
+      <p>Чтобы подключить ваш диск нужно отправить запрос</>
+      {% if result.error %}
+          <p>{{ result.error }}</p>
+      {% endif %}
       <form action="" method="post">
       <div class="mb-3">
       <div class="form-check">
-          <input class="form-check-input" type="radio" name="yandex" id="yandex">
+          <input class="form-check-input" type="radio" name="disk" value="yandex" id="yandex">
           <label class="form-check-label" for="yandex">
              Яндекс Диск
           </label>
       </div>
       <div class="form-check">
-          <input class="form-check-input" type="radio" name="googl" id="googl" checked>
-         <label class="form-check-label" for="googl">
+          <input class="form-check-input" type="radio" name="disk" value="google" id="google" checked>
+         <label class="form-check-label" for="google">
                Google Disk
          </label>
       </div>
       </div>
        <button type="submit" class="btn btn-primary">Отправить</button>
       </form>
+      {% endif %}
     </main>
   </div>
 </div>
