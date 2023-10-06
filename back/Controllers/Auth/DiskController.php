@@ -16,6 +16,8 @@ class DiskController extends AppController {
 	protected $scope_google = '';//пример https://www.googleapis.com/auth/drive.readonly
 	protected $login;
 	protected $disk_token;
+	protected $result = [];
+	public $max_fail_size = 1000000;
 	
 	public function __construct() 
 	{
@@ -34,8 +36,8 @@ class DiskController extends AppController {
 	public function index() 
 	{
 		//self::__construct();
-		$result['token'] = $this->disk_token;
-		echo $this->twig()->render('/panel/integrations.twig',['result' => $result]);
+		$this->result['token'] = $this->disk_token;
+		echo $this->twig()->render('/panel/integrations.twig',['result' => $this->result]);
 	}
 
 	public function zapros_token()
@@ -59,32 +61,30 @@ class DiskController extends AppController {
 } */
 	public function yandex_token()
 	{
-		$result = [];
 		if (isset($_GET['code']) && preg_match('/^[0-9]{7}$/',$_GET['code'])) {
 			$options = [CURLOPT_URL => 'https://oauth.yandex.ru/token', CURLOPT_HEADER => false, CURLOPT_SSL_VERIFYPEER => true,CURLOPT_SSL_VERIFYHOST => 2,
 			CURLOPT_RETURNTRANSFER => true,CURLOPT_POSTFIELDS => 'grant_type=authorization_code&code='.$_GET['code'].'',CURLOPT_TIMEOUT => 8,
 			CURLOPT_HTTPHEADER => ['Content-type: application/x-www-form-urlencoded','Accept: application/json','Authorization: Basic '.base64_encode($this->clientid_yandex.':'.$this->client_secret_yandex)],
 		    ];
 			$token = Curl::curl($options);
-			if (isset($token)) {
-				$arr = json_decode($token,true);
+			if (isset($token['body'])) {
+				$arr = json_decode($token['body'],true);
 				if (isset($arr['access_token'])) {
 					USER::disk_token($this->login,$arr['access_token']);
-					$result['token'] = $arr['access_token'];
+					$this->result['token'] = $arr['access_token'];
 				}
-				else { $result['error'] = $arr['error_description']; }
+				else { $this->result['error'] = $arr['error_description']; }
 			}
-			else {$result['error'] = 'Сервис Яndex не ответил!';}
+			else {$this->result['error'] = 'Сервис Яndex не ответил!';}
 		}
-		else {$result['error'] = $_GET['error_description'] ?? 'Error Яndex'; }
-		echo $this->twig()->render('/panel/integrations.twig',['result' => $result]);
+		else {$this->result['error'] = $_GET['error_description'] ?? 'Error Яndex'; }
+		echo $this->twig()->render('/panel/integrations.twig',['result' => $this->result]);
 	}
 /*
 запрашиваем токен для Google
 */
 	public function google_token()
 	{
-		$result = [];
 		if (isset($_GET['code'])) {
 			$params = [
 			'client_id'     => $this->clientid_google,
@@ -98,18 +98,61 @@ class DiskController extends AppController {
 			CURLOPT_HTTPHEADER => ['Content-type: application/x-www-form-urlencoded','Accept: application/json']
 	        ];
 			$token = Curl::curl($options);
-			if (isset($token)) {
-				$arr = json_decode($token,true);
+			if (isset($token['body'])) {
+				$arr = json_decode($token['body'],true);
 				if (isset($arr['access_token'])) {
 					USER::disk_token($this->login,$arr['access_token']);
-					$result['token'] = $arr['access_token'];
+					$this->result['token'] = $arr['access_token'];
 				}
-				else { $result['error'] = 'Google не может авторизовать одну или несколько запрошенных областей';}
+				else { $this->result['error'] = 'Google не может авторизовать одну или несколько запрошенных областей';}
 			} 
-			else {$result['error'] = 'Сервис Google не ответил!';}
+			else {$this->result['error'] = 'Сервис Google не ответил!';}
 
 		}
-		else {$result['error'] = $_GET['error'] ?? 'Error Google'; }
-		echo $this->twig()->render('/panel/integrations.twig',['result' => $result]);
+		else {$this->result['error'] = $_GET['error'] ?? 'Error Google'; }
+		echo $this->twig()->render('/panel/integrations.twig',['result' => $this->result]);
+	}
+
+	public function userfail()
+	{
+		if (!empty($_FILES)) {
+			if ($_FILES['diskfile']['error'] == UPLOAD_ERR_OK) {
+				if (!empty($_FILES['diskfile']['size']) && $_FILES['diskfile']['size'] < $this->max_fail_size) {
+					if (isset($_POST['yandexfile'])) {
+						$options = [CURLOPT_URL => 'https://cloud-api.yandex.net/v1/disk/resources/upload?path='.urlencode('disk:/Приложения/'.$this->name_service), 
+						CURLOPT_HEADER => false, CURLOPT_SSL_VERIFYPEER => true,CURLOPT_SSL_VERIFYHOST => 2,CURLOPT_RETURNTRANSFER => true,CURLOPT_TIMEOUT => 10,
+						CURLOPT_HTTPHEADER => ['Accept: application/json','Authorization: OAuth '.$this->disk_token]
+						];
+						$res = Curl::curl($options);
+						if (isset($res['body'])) {
+							$arr = json_decode($res['body'],true);
+							if (isset($arr['href'])) {
+								$fp = fopen($_FILES['diskfile']['tmp_name'], 'r');
+								$data = [CURLOPT_URL => $arr['href'],CURLOPT_HEADER => false, CURLOPT_SSL_VERIFYPEER => true,CURLOPT_SSL_VERIFYHOST => 2,CURLOPT_RETURNTRANSFER => true,
+								CURLOPT_UPLOAD => true,CURLOPT_PUT => true,CURLOPT_INFILE => $fp,CURLOPT_INFILESIZE => $_FILES['diskfile']['size'],CURLOPT_TIMEOUT => 20,
+						         CURLOPT_HTTPHEADER => ['Accept: application/json']
+						        ];
+								$code = Curl::curl($data);
+								if ($code['http_code'] == 201) {
+									$this->result['error'] = 'Файл успешно загружен на Яndex.Диск';
+								}
+								else {$this->result['error'] = $code['http_code'];}
+							}
+							else {$this->result['error'] = $arr['error'] ?? 'Ошибка Яndex URL';}
+						}
+						else {$this->result['error'] = 'Сервис Яndex не ответил!'; }
+						
+					}
+					elseif (isset($_POST['googlefile'])) {
+						$googlefile = $_FILES['diskfile']['tmp_name'];
+					}
+					else {$this->redirect('/login');}
+				}
+				else {$this->result['error'] = 'Большой размер файла'; }
+				
+			}
+			else {$this->result['error'] = $_FILES['userlogo']['error']; }
+		}
+		echo $this->twig()->render('/panel/integrations.twig',['result' => $this->result]);
 	}
 }

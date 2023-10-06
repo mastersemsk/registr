@@ -31,18 +31,22 @@
       <h2>Загрузка файлов Яндекс|Google Disk</h2>
       {% if result.token %}
       <p>Загрузка файла на Яндекс Диск</p>
-      <form action="" method="post">
+      <form enctype="multipart/form-data" action="/panel/userfail" method="post">
       <div class="mb-3">
+        <input type="hidden" name="MAX_FILE_SIZE" value="1000000">
         <label for="yandexFile" class="form-label">Выбрать файл для загрузки</label>
-        <input class="form-control" type="file" id="yandexFile">
+         <input class="form-control" type="file" id="yandexFile" name="diskfile">
+         <input type="hidden" name="yandexfile" value="1">
       </div>
       <button type="submit" class="btn btn-primary">Загрузить</button>
       </form>
        <p>Загрузка файла на Google Disk</p>
-      <form action="" method="post">
+      <form enctype="multipart/form-data" action="/panel/userfail" method="post">
       <div class="mb-3">
         <label for="googleFile" class="form-label">Выбрать файл для загрузки</label>
-        <input class="form-control" type="file" id="googleFile">
+        <input type="hidden" name="MAX_FILE_SIZE" value="1000000">
+        <input class="form-control" type="file" id="googleFile" name="diskfile">
+        <input type="hidden" name="googlefile" value="1">
       </div>
       <button type="submit" class="btn btn-primary">Загрузить</button>
       </form>     
