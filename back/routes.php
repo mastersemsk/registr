@@ -22,7 +22,9 @@ $r->addRoute('GET', '/panel/requisites', [PanelController::class, 'requisites'])
 $r->addRoute('GET', '/panel/report', [PanelController::class, 'report']);
 $r->addRoute('GET', '/panel/integrations', [DiskController::class, 'index']);
 $r->addRoute('POST', '/panel/integrations', [DiskController::class, 'zapros_token']);
-$r->addRoute('GET', '/panel/token', [DiskController::class, 'otvet_token']);
+$r->addRoute('GET', '/panel/yandex_token', [DiskController::class, 'yandex_token']);
+$r->addRoute('GET', '/panel/google_token', [DiskController::class, 'google_token']);
+$r->addRoute('POST', '/panel/userfail', [DiskController::class, 'userfail']);
 // {id} must be a number (\d+)
 //$r->addRoute('GET', '/user/{id:\d+}', 'get_user_handler');
 // The /{title} suffix is optional

@@ -3,11 +3,13 @@ namespace Content;
 
 class Curl 
 {
-    public static function curl($data)
+    public static function curl($data): array
     {
         $ch = curl_init();
         curl_setopt_array($ch, $data);
-        $result = curl_exec($ch);
+        $result['body'] = curl_exec($ch);
+        $result['http_code'] = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        $result['error']= curl_errno($ch);
         curl_close($ch);
         return $result;
     }
