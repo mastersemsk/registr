@@ -4,6 +4,7 @@ namespace Controllers\Auth;
 use Controllers\AppController;
 use Models\User;
 use Content\Curl;
+use \CURLFile;
 
 class DiskController extends AppController {
 	protected $name_service = 'ePOS Казахстан'; //имя приложения на  Яндекс.OAuth
@@ -13,7 +14,7 @@ class DiskController extends AppController {
 	protected $clientid_google = '';
 	protected $client_secret_google = '';
 	protected $redirect_uri_google = self::URL.'/panel/google_token';
-	protected $scope_google = '';//пример https://www.googleapis.com/auth/drive.readonly
+	protected $scope_google = '';//пример https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.resource
 	protected $login;
 	protected $disk_token;
 	protected $result = [];
@@ -112,12 +113,15 @@ class DiskController extends AppController {
 		else {$this->result['error'] = $_GET['error'] ?? 'Error Google'; }
 		echo $this->twig()->render('/panel/integrations.twig',['result' => $this->result]);
 	}
-
+/*запись файла на Яндекс Диск*/
 	public function userfail()
 	{
 		if (!empty($_FILES)) {
 			if ($_FILES['diskfile']['error'] == UPLOAD_ERR_OK) {
 				if (!empty($_FILES['diskfile']['size']) && $_FILES['diskfile']['size'] < $this->max_fail_size) {
+					$tmp_name = $_FILES['diskfile']['tmp_name'];
+					$file_size = $_FILES['diskfile']['size'];
+					$fp = fopen($tmp_name, 'r');
 					if (isset($_POST['yandexfile'])) {
 						$options = [CURLOPT_URL => 'https://cloud-api.yandex.net/v1/disk/resources/upload?path='.urlencode('disk:/Приложения/'.$this->name_service), 
 						CURLOPT_HEADER => false, CURLOPT_SSL_VERIFYPEER => true,CURLOPT_SSL_VERIFYHOST => 2,CURLOPT_RETURNTRANSFER => true,CURLOPT_TIMEOUT => 10,
@@ -127,9 +131,9 @@ class DiskController extends AppController {
 						if (isset($res['body'])) {
 							$arr = json_decode($res['body'],true);
 							if (isset($arr['href'])) {
-								$fp = fopen($_FILES['diskfile']['tmp_name'], 'r');
+								
 								$data = [CURLOPT_URL => $arr['href'],CURLOPT_HEADER => false, CURLOPT_SSL_VERIFYPEER => true,CURLOPT_SSL_VERIFYHOST => 2,CURLOPT_RETURNTRANSFER => true,
-								CURLOPT_UPLOAD => true,CURLOPT_PUT => true,CURLOPT_INFILE => $fp,CURLOPT_INFILESIZE => $_FILES['diskfile']['size'],CURLOPT_TIMEOUT => 20,
+								CURLOPT_UPLOAD => true,CURLOPT_PUT => true,CURLOPT_INFILE => $fp,CURLOPT_INFILESIZE => $file_size,CURLOPT_TIMEOUT => 20,
 						         CURLOPT_HTTPHEADER => ['Accept: application/json']
 						        ];
 								$code = Curl::curl($data);
@@ -144,14 +148,26 @@ class DiskController extends AppController {
 						
 					}
 					elseif (isset($_POST['googlefile'])) {
-						$googlefile = $_FILES['diskfile']['tmp_name'];
+						$mim = mime_content_type($tmp_name);
+						$info = pathinfo($tmp_name);
+						$name_fail = $info['basename'];
+						$cfile = new CURLFile($tmp_name,$mim,$name_fail);
+						$data = [CURLOPT_URL => 'https://www.googleapis.com/upload/drive/v3/files?uploadType=media',CURLOPT_HEADER => false, CURLOPT_SSL_VERIFYPEER => true,
+						CURLOPT_SSL_VERIFYHOST => 2,CURLOPT_RETURNTRANSFER => true,CURLOPT_POST => true,CURLOPT_UPLOAD => true,CURLOPT_POSTFIELDS => ['cfile' => $cfile],CURLOPT_TIMEOUT => 20,
+						CURLOPT_HTTPHEADER => ['Accept: application/json','Content-Type: '.$mim,'Content-Length: '.$file_size]
+						];
+						$res_google = Curl::curl($data);
+						if ($res_google['http_code'] == 200) {
+							$this->result['error'] = 'Файл успешно загружен на Google.Disk';
+						}
+						else {$this->result['error'] = $res_google['http_code'];}
 					}
 					else {$this->redirect('/login');}
 				}
 				else {$this->result['error'] = 'Большой размер файла'; }
 				
 			}
-			else {$this->result['error'] = $_FILES['userlogo']['error']; }
+			else {$this->result['error'] = $_FILES['diskfile']['error']; }
 		}
 		echo $this->twig()->render('/panel/integrations.twig',['result' => $this->result]);
 	}
