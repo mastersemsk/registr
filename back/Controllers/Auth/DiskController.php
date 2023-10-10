@@ -10,7 +10,7 @@ class DiskController extends AppController {
 	protected $name_service = 'ePOS Казахстан'; //имя приложения на  Яндекс.OAuth
 	protected $clientid_yandex = '';
 	protected $client_secret_yandex = '';
-	protected $redirect_uri_yandex = self::URL.'/panel/yandex_token'; // нужно добавить в настройки приложения на яндекс
+	protected $redirect_uri_yandex = 'https://oauth.yandex.ru/verification_code';//self::URL.'/panel/yandex_token'; // нужно добавить в настройки приложения на яндекс
 	protected $clientid_google = '';
 	protected $client_secret_google = '';
 	protected $redirect_uri_google = self::URL.'/panel/google_token';
@@ -42,7 +42,7 @@ class DiskController extends AppController {
 	}
 
 	public function zapros_token()
-	{
+	{//https://oauth.yandex.ru/authorize?response_type=token&client_id=2ba5ca2b7c8046a2b3936b1ae3600b6c
 		if ($_POST['disk'] == 'yandex') {
 			$this->redirect('https://oauth.yandex.ru/authorize?response_type=code&client_id='.$this->clientid_yandex.'&redirect_uri='.$this->redirect_uri_yandex.'&login_hint='.$this->login);
 		}
@@ -116,14 +116,17 @@ class DiskController extends AppController {
 /*запись файла на Яндекс Диск*/
 	public function userfail()
 	{
+		$this->result['token'] = $this->disk_token;
 		if (!empty($_FILES)) {
 			if ($_FILES['diskfile']['error'] == UPLOAD_ERR_OK) {
 				if (!empty($_FILES['diskfile']['size']) && $_FILES['diskfile']['size'] < $this->max_fail_size) {
 					$tmp_name = $_FILES['diskfile']['tmp_name'];
 					$file_size = $_FILES['diskfile']['size'];
+					$mim = mime_content_type($tmp_name);
+					$name_fail = basename($_FILES['diskfile']['name']);
 					$fp = fopen($tmp_name, 'r');
 					if (isset($_POST['yandexfile'])) {
-						$options = [CURLOPT_URL => 'https://cloud-api.yandex.net/v1/disk/resources/upload?path='.urlencode('disk:/Приложения/'.$this->name_service), 
+						$options = [CURLOPT_URL => 'https://cloud-api.yandex.net/v1/disk/resources/upload?path='.urlencode('app:/'.$name_fail).'&overwrite=true', 
 						CURLOPT_HEADER => false, CURLOPT_SSL_VERIFYPEER => true,CURLOPT_SSL_VERIFYHOST => 2,CURLOPT_RETURNTRANSFER => true,CURLOPT_TIMEOUT => 10,
 						CURLOPT_HTTPHEADER => ['Accept: application/json','Authorization: OAuth '.$this->disk_token]
 						];
@@ -142,15 +145,12 @@ class DiskController extends AppController {
 								}
 								else {$this->result['error'] = $code['http_code'];}
 							}
-							else {$this->result['error'] = $arr['error'] ?? 'Ошибка Яndex URL';}
+							else {$this->result['error'] = $arr['description'] ?? 'Ошибка Яndex URL';}
 						}
 						else {$this->result['error'] = 'Сервис Яndex не ответил!'; }
 						
 					}
 					elseif (isset($_POST['googlefile'])) {
-						$mim = mime_content_type($tmp_name);
-						$info = pathinfo($tmp_name);
-						$name_fail = $info['basename'];
 						$cfile = new CURLFile($tmp_name,$mim,$name_fail);
 						$data = [CURLOPT_URL => 'https://www.googleapis.com/upload/drive/v3/files?uploadType=media',CURLOPT_HEADER => false, CURLOPT_SSL_VERIFYPEER => true,
 						CURLOPT_SSL_VERIFYHOST => 2,CURLOPT_RETURNTRANSFER => true,CURLOPT_POST => true,CURLOPT_UPLOAD => true,CURLOPT_POSTFIELDS => ['cfile' => $cfile],CURLOPT_TIMEOUT => 20,
