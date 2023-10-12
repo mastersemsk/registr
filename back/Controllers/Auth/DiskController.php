@@ -38,28 +38,19 @@ class DiskController extends AppController {
 	{
 		//self::__construct();
 		$this->result['token'] = $this->disk_token;
-		echo $this->twig()->render('/panel/integrations.twig',['result' => $this->result]);
-	}
-
-	public function zapros_token()
-	{//https://oauth.yandex.ru/authorize?response_type=token&client_id=2ba5ca2b7c8046a2b3936b1ae3600b6c
-		if ($_POST['disk'] == 'yandex') {
-			$this->redirect('https://oauth.yandex.ru/authorize?response_type=code&client_id='.$this->clientid_yandex.'&redirect_uri='.$this->redirect_uri_yandex.'&login_hint='.$this->login);
+		//https://oauth.yandex.ru/authorize?response_type=token&client_id=2ba5ca2b7c8046a2b3936b1ae3600b6c
+		if ($_GET['disk'] == 'yandex') {
+			$this->redirect('https://oauth.yandex.ru/authorize?response_type=code&client_id='.$this->clientid_yandex.'&redirect_uri='.$this->redirect_uri_yandex);
 		}
-		elseif ($_POST['disk'] == 'google') {
+		elseif ($_GET['disk'] == 'google') {
 			$this->redirect('https://accounts.google.com/o/oauth2/auth?client_id='.$this->clientid_google.'&redirect_uri='.$this->redirect_uri_google.'&response_type=code&scope='.$this->scope_google);
 		}
-		else { $this->redirect('/login'); }
+		
+		echo $this->twig()->render('/panel/integrations.twig',['result' => $this->result]);
 	}
 /*
 запрашиваем токен для Яндекс
-{
-	"token_type": "bearer",
-  "access_token": "AQAAAACy1C6ZAAAAfa6vDLuItEy8pg-iIpnDxIs",
-  "expires_in": 124234123534,
-  "refresh_token": "1:GN686QVt0mmakDd9:A4pYuW9LGk0_UnlrMIWklkAuJkUWbq27loFekJVmSYrdfzdePBy7:A-2dHOmBxiXgajnD-kYOwQ",
-  "scope": "login:info login:email login:avatar"
-} */
+*/
 	public function yandex_token()
 	{
 		if (isset($_GET['code']) && preg_match('/^[0-9]{7}$/',$_GET['code'])) {
@@ -79,7 +70,7 @@ class DiskController extends AppController {
 			else {$this->result['error'] = 'Сервис Яndex не ответил!';}
 		}
 		else {$this->result['error'] = $_GET['error_description'] ?? 'Error Яndex'; }
-		echo $this->twig()->render('/panel/integrations.twig',['result' => $this->result]);
+		echo $this->twig()->render('/panel/res_token.twig',['result' => $this->result]);
 	}
 /*
 запрашиваем токен для Google
@@ -111,7 +102,7 @@ class DiskController extends AppController {
 
 		}
 		else {$this->result['error'] = $_GET['error'] ?? 'Error Google'; }
-		echo $this->twig()->render('/panel/integrations.twig',['result' => $this->result]);
+		echo $this->twig()->render('/panel/res_token.twig',['result' => $this->result]);
 	}
 /*запись файла на Яндекс Диск*/
 	public function userfail()
