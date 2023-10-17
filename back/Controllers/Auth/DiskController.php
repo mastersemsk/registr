@@ -131,10 +131,7 @@ class DiskController extends AppController {
 						         CURLOPT_HTTPHEADER => ['Accept: application/json']
 						        ];
 								$code = Curl::curl($data);
-								if ($code['http_code'] == 201) {
-									$this->result['error'] = 'Файл успешно загружен на Яndex.Диск';
-								}
-								else {$this->result['error'] = $code['http_code'];}
+								$this->result['error'] = ($code['http_code'] == 201) ? 'Файл успешно загружен на Яndex.Диск' : $code['http_code'];
 							}
 							else {$this->result['error'] = $arr['description'] ?? 'Ошибка Яndex URL';}
 						}
@@ -148,10 +145,7 @@ class DiskController extends AppController {
 						CURLOPT_HTTPHEADER => ['Accept: application/json','Content-Type: '.$mim,'Content-Length: '.$file_size]
 						];
 						$res_google = Curl::curl($data);
-						if ($res_google['http_code'] == 200) {
-							$this->result['error'] = 'Файл успешно загружен на Google.Disk';
-						}
-						else {$this->result['error'] = $res_google['http_code'];}
+						$this->result['error'] = ($res_google['http_code'] == 200) ? 'Файл успешно загружен на Google.Disk' : $res_google['http_code'];
 					}
 					else {$this->redirect('/login');}
 				}
