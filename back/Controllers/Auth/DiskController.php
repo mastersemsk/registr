@@ -38,7 +38,7 @@ class DiskController extends AppController {
 	{
 		//self::__construct();
 		$this->result['token'] = $this->disk_token;
-		//https://oauth.yandex.ru/authorize?response_type=token&client_id=2ba5ca2b7c8046a2b3936b1ae3600b6c
+		
 		if ($_GET['disk'] == 'yandex') {
 			$this->redirect('https://oauth.yandex.ru/authorize?response_type=code&client_id='.$this->clientid_yandex.'&redirect_uri='.$this->redirect_uri_yandex);
 		}

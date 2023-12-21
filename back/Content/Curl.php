@@ -3,7 +3,7 @@ namespace Content;
 
 class Curl 
 {
-    public static function curl($data): array
+    public static function curl(array $data): array
     {
         $ch = curl_init();
         curl_setopt_array($ch, $data);
