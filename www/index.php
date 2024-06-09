@@ -25,17 +25,17 @@ $uri = rawurldecode($uri);
 
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 switch ($routeInfo[0]) {
-    case FastRoute\Dispatcher::NOT_FOUND:
+    case Dispatcher::NOT_FOUND:
         // ... 404 Not Found
 		http_response_code(404);
         echo '404'; //$container['twig']->render('404.twig');
         break;
-    case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
+    case Dispatcher::METHOD_NOT_ALLOWED:
         $allowedMethods = $routeInfo[1];
         // ... 405 Method Not Allowed
 		echo '405';
         break;
-    case FastRoute\Dispatcher::FOUND:
+    case Dispatcher::FOUND:
     $handler = $routeInfo[1];
     $vars    = $routeInfo[2];
     if (is_object($handler) || (is_string($handler) && strpos($handler, '\\') === false)) {
