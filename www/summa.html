@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8">
+		<title>Подсчёт суммы</title>
+	</head>
+	<body>
+		<noscript>
+			<h2>Javascript отключен в вашем веб-браузере. Некоторые функции не будут хорошо работать.</h2>
+			<style type="text/css">
+				form { display:none; }
+			</style>
+		</noscript>
+		<form action="pay.php" id="sendForm" method="post" autocomplete="off">
+		<p><label>Номер счёта <input name="account" id="accountNumber" type="text" minlength="3" maxlength="50" autofocus required></label></p>
+		<p><label for="selectCurrency">Способ оплаты</label>
+		<select id="selectCurrency" name="selectCurrency" style="color: red" required>
+			<option value="">Выбрать</option>
+			<option value="BTC">BTC</option>
+			<option value="USDT">USDT</option>
+			<option value="WMZ">WebMoney WMZ</option>
+			<option value="WMX">WebMoney WMX | BTC</option>
+			<option value="WMT">WebMoney WMT | USDT</option>
+		</select></p>
+			<p><label>На счёт <input name="summaRub" id="summaRub" type="number" maxlength="8" pattern="^\d+(\.\d{1,2})?$" title="Сумма поступит на счёт" style="color: red" required> RUB</label></p>
+			<p><label>Оплата <input name="summaOplata" id="summaOplata" type="number" maxlength="8" pattern="^\d+(\.\d+)?$" title="Сумма к оплате без комиссии платёжной системы" style="color: red" required> <span id="nameCurrency"></span></label></p>
+			<input name="operator" type="hidden" value="1">
+			<p><input id="btn" style="display:block" type="submit" value="Отправить" /></p>
+       </form>
+	   <script src="js/currecy.js?foo=2" defer="true"></script>
+	</body>
+</html>
