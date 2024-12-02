@@ -6,10 +6,14 @@ use Controllers\Auth\PasswordResetController;
 use Controllers\Auth\RegisterController;
 // определяем контроллеры вызываемые по определённым путям
 use Controllers\HomeController;
+use Controllers\KursyController;
+use Controllers\PayController;
 use FastRoute\RouteCollector;
 
 return function (RouteCollector $r) {
 $r->addRoute('GET', '/', [HomeController::class, 'index']);
+$r->addRoute('GET', '/kursy', [KursyController::class, 'get_kursy']);
+$r->addRoute('POST', '/pay', [PayController::class, 'pay']);
 $r->addRoute('GET', '/login', [AuthController::class, 'in']);
 $r->addRoute('POST', '/login', [AuthController::class, 'prov']);
 $r->addRoute('GET', '/logout', [AuthController::class, 'logout']);
