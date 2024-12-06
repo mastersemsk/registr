@@ -7,6 +7,7 @@ use Content\Curl;
 use \CURLFile;
 
 class DiskController extends AppController {
+	use User,Curl;
 	protected $name_service = 'ePOS Казахстан'; //имя приложения на  Яндекс.OAuth
 	protected $clientid_yandex = '';
 	protected $client_secret_yandex = '';
@@ -27,7 +28,7 @@ class DiskController extends AppController {
 		if (empty($this->login)) {
 		   $this->redirect('/login');
 		}
-		$prov = USER::prov_email($this->login);
+		$prov = $this->prov_email($this->login);
 		if (empty($prov) || $prov[0]['token'] != $_SESSION['code']) {
 			$this->redirect('/login');
 		}
@@ -58,11 +59,11 @@ class DiskController extends AppController {
 			CURLOPT_RETURNTRANSFER => true,CURLOPT_POSTFIELDS => 'grant_type=authorization_code&code='.$_GET['code'].'',CURLOPT_TIMEOUT => 8,
 			CURLOPT_HTTPHEADER => ['Content-type: application/x-www-form-urlencoded','Accept: application/json','Authorization: Basic '.base64_encode($this->clientid_yandex.':'.$this->client_secret_yandex)],
 		    ];
-			$token = Curl::curl($options);
+			$token = $this->curl($options);
 			if (isset($token['body'])) {
 				$arr = json_decode($token['body'],true);
 				if (isset($arr['access_token'])) {
-					USER::disk_token($this->login,$arr['access_token']);
+					$this->disk_token($this->login,$arr['access_token']);
 					$this->result['token'] = $arr['access_token'];
 				}
 				else { $this->result['error'] = $arr['error_description']; }
@@ -89,11 +90,11 @@ class DiskController extends AppController {
 			CURLOPT_RETURNTRANSFER => true,CURLOPT_POSTFIELDS => http_build_query($params),CURLOPT_TIMEOUT => 10,
 			CURLOPT_HTTPHEADER => ['Content-type: application/x-www-form-urlencoded','Accept: application/json']
 	        ];
-			$token = Curl::curl($options);
+			$token = $this->curl($options);
 			if (isset($token['body'])) {
 				$arr = json_decode($token['body'],true);
 				if (isset($arr['access_token'])) {
-					USER::disk_token($this->login,$arr['access_token']);
+					$this->disk_token($this->login,$arr['access_token']);
 					$this->result['token'] = $arr['access_token'];
 				}
 				else { $this->result['error'] = 'Google не может авторизовать одну или несколько запрошенных областей';}
@@ -121,7 +122,7 @@ class DiskController extends AppController {
 						CURLOPT_HEADER => false, CURLOPT_SSL_VERIFYPEER => true,CURLOPT_SSL_VERIFYHOST => 2,CURLOPT_RETURNTRANSFER => true,CURLOPT_TIMEOUT => 10,
 						CURLOPT_HTTPHEADER => ['Accept: application/json','Authorization: OAuth '.$this->disk_token]
 						];
-						$res = Curl::curl($options);
+						$res = $this->curl($options);
 						if (isset($res['body'])) {
 							$arr = json_decode($res['body'],true);
 							if (isset($arr['href'])) {
@@ -130,7 +131,7 @@ class DiskController extends AppController {
 								CURLOPT_UPLOAD => true,CURLOPT_PUT => true,CURLOPT_INFILE => $fp,CURLOPT_INFILESIZE => $file_size,CURLOPT_TIMEOUT => 20,
 						         CURLOPT_HTTPHEADER => ['Accept: application/json']
 						        ];
-								$code = Curl::curl($data);
+								$code = $this->curl($data);
 								$this->result['error'] = ($code['http_code'] == 201) ? 'Файл успешно загружен на Яndex.Диск' : $code['http_code'];
 							}
 							else {$this->result['error'] = $arr['description'] ?? 'Ошибка Яndex URL';}
@@ -144,7 +145,7 @@ class DiskController extends AppController {
 						CURLOPT_SSL_VERIFYHOST => 2,CURLOPT_RETURNTRANSFER => true,CURLOPT_POST => true,CURLOPT_UPLOAD => true,CURLOPT_POSTFIELDS => ['cfile' => $cfile],CURLOPT_TIMEOUT => 20,
 						CURLOPT_HTTPHEADER => ['Accept: application/json','Content-Type: '.$mim,'Content-Length: '.$file_size]
 						];
-						$res_google = Curl::curl($data);
+						$res_google = $this->curl($data);
 						$this->result['error'] = ($res_google['http_code'] == 200) ? 'Файл успешно загружен на Google.Disk' : $res_google['http_code'];
 					}
 					else {$this->redirect('/login');}

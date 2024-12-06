@@ -8,11 +8,12 @@ use Content\Hash;
 
 class RegisterController extends AppController 
 {
+	use User,Hash;
 	protected $id;
 	
 	public function reg($error=null,$oldemail=null)
     {
-        echo $this->twig()->render('/auth/reg.twig',['error' => $error,'oldemail' => $oldemail,'code' => Hash::code()]); die();
+        echo $this->twig()->render('/auth/reg.twig',['error' => $error,'oldemail' => $oldemail,'code' => $this->code()]); die();
     }
 	
 	/*
@@ -44,13 +45,13 @@ class RegisterController extends AppController
 			$this->reg('Пароли не совпадают.',$_POST['login']);
 		}
 		
-		if (!empty(User::prov_email($_POST['login']))) {
+		if (!empty($this->prov_email($_POST['login']))) {
 			$this->reg('Пользователь с таким email уже зарегистрирован!',$_POST['login']);
 		}
 	    /* 
 		  Записываем в базу
 		*/
-		$this->id = User::creat(['code' => $_POST['code'],'imia' => $_POST['imia'],'login' => $_POST['login'],'parol' => Hash::creatPass($_POST['parol'])]);
+		$this->id = $this->creat(['code' => $_POST['code'],'imia' => $_POST['imia'],'login' => $_POST['login'],'parol' => $this->creatPass($_POST['parol'])]);
 		if (empty($this->id)) {
 		    $this->reg('Ошибка записи!');
 	    }
@@ -66,16 +67,16 @@ class RegisterController extends AppController
 		$this->redirect('/');
 	}
 	
-	public function prov_email($id,$token) {
+	public function prov_token($id,$token) {
 		//http://e-pos/register/3/HX9yVbNVtICf8qSaIwQ-q
-		$res_token = User::verifer_token($id);
+		$res_token = $this->verifer_token($id);
 		if (empty($res_token) || empty($token) || mb_strlen($token,'UTF-8') != Hash::$size) {
 			 $this->reg('Регистрации не существует или вы уже активировали ссылку');
 		}
 		if (empty($res_token[0]['token']) || $res_token[0]['token'] !== $token) {
 			$this->reg('Регистрации не существует');
 		}
-		User::up_token($id);
+		$this->up_token($id);
 		$this->redirect('/');
 	}
 }

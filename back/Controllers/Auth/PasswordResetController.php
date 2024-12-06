@@ -8,9 +8,10 @@ use Content\Hash;
 
 class PasswordResetController extends AppController
 {
+	use User,Hash;
 	public function form_pass($error=null,$oldemail=null)
 	{
-		echo $this->twig()->render('/auth/forgot_password.twig',['error' => $error,'code' => Hash::code()]); die();
+		echo $this->twig()->render('/auth/forgot_password.twig',['error' => $error,'code' => $this->code()]); die();
 	}
 	
 	public function send_pass()
@@ -19,7 +20,7 @@ class PasswordResetController extends AppController
 			$this->form_pass('Ошибка ввода e-mail!');
 		}
 		
-		$prov = User::prov_email($_POST['login']);
+		$prov = $this->prov_email($_POST['login']);
 		if (empty($prov)) {
 			$this->form_pass('Пользователь с таким email не зарегистрирован!');
 		}
@@ -27,9 +28,9 @@ class PasswordResetController extends AppController
 		if (empty($prov[0]['verified'])) {
 			$this->form_pass('Ваш email не подтверждён!');
 		}
-		 $new_pass = Hash::generate_password(10);
-		 $new_pass_hazh = Hash::creatPass($new_pass);
-		 User::up_pass($new_pass_hazh,$_POST['login']);
+		 $new_pass = $this->generate_password(10);
+		 $new_pass_hazh = $this->creatPass($new_pass);
+		 $this->up_pass($new_pass_hazh,$_POST['login']);
 		$send = new SendMail;
 		$text_pisma = 'Здравствуйте, <b>'.$prov[0]['name'].'</b>. <br>Спасибо за регистрацию на нашем сервисе. Вы запросили изменение пароля. 
 		Это ваш новый пароль '.$new_pass;

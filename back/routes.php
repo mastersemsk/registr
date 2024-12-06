@@ -19,7 +19,7 @@ $r->addRoute('POST', '/login', [AuthController::class, 'prov']);
 $r->addRoute('GET', '/logout', [AuthController::class, 'logout']);
 $r->addRoute('GET', '/register', [RegisterController::class, 'reg']);
 $r->addRoute('POST', '/register', [RegisterController::class, 'prov']);
-$r->addRoute('GET', '/register/{id:\d+}/{token}', [RegisterController::class, 'prov_email']);
+$r->addRoute('GET', '/register/{id:\d+}/{token}', [RegisterController::class, 'prov_token']);
 $r->addRoute('GET', '/forgot-password', [PasswordResetController::class, 'form_pass']);
 $r->addRoute('POST', '/forgot-password', [PasswordResetController::class, 'send_pass']);
 $r->addRoute('GET', '/panel/requisites', [PanelController::class, 'requisites']);

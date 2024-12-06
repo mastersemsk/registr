@@ -1,13 +1,13 @@
 <?php
 namespace Content;
 
-class Hash
+trait Hash
 {   
-	protected static $alphabet = '0123456789_abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	public static $size = 21; //длина строки
-	protected static $id;
+	protected $alphabet = '0123456789_abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	public $size = 21; //длина строки
+	protected $id;
 	
-	public static function code()
+	public function code()
 	{
         
 		session_start();
@@ -18,17 +18,17 @@ class Hash
 		return $_SESSION['code'];
 	}
 	// проверка пароля
-	public static function verfPass($client_pass,$baza_pass)
+	public function verfPass(string $client_pass,string $baza_pass): bool
 	{
 		return password_verify($client_pass,$baza_pass);
 	}
 	//создание пароля
-	public static function creatPass($parol)
+	public function creatPass(string $parol): string
 	{
 		return password_hash($parol,PASSWORD_DEFAULT);
 	}
 	// генерация пароля
-    public static function generate_password($symbolsCount)
+    public function generate_password(int $symbolsCount): string|bool 
     {
       $arr = [
         ['a','b','c','d','e','f',
@@ -39,8 +39,7 @@ class Hash
             'G','H','I','J','K','L',
             'M','N','O','P','R','S',
             'T','U','V','X','Y','Z'],
-        ['1','2','3','4','5','6',
-            '7','8','9','0']
+        ['1','2','3','4','5','6','7','8','9','0']
         ];
  
         $chars = array_map(function($group) {

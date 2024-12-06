@@ -1,9 +1,9 @@
 <?php
 namespace Content;
 
-class Curl 
+trait Curl 
 {
-    public static function curl(array $data): array
+    public function curl(array $data): array|bool
     {
         $ch = curl_init();
         curl_setopt_array($ch, $data);

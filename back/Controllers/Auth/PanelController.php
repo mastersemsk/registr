@@ -6,6 +6,7 @@ use Models\User;
 
 class PanelController extends AppController {
 	
+	use User;
 	protected $login;
 	
 	public function __construct() 
@@ -15,7 +16,7 @@ class PanelController extends AppController {
 		if (empty($this->login)) {
 		   $this->redirect('/login');
 		}
-		$prov = USER::prov_email($this->login);
+		$prov = $this->prov_email($this->login);
 		if (empty($prov) || $prov[0]['token'] != $_SESSION['code']) {
 			$this->redirect('/login');
 		}

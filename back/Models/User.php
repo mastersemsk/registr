@@ -1,51 +1,51 @@
 <?php
 namespace Models;
 
-class User extends Model
+trait User
 {
+	use Connect;
 
 	/*
 	 есть ли пользователь с таким email
 	*/
-	public static function prov_email($email) 
+	public function prov_email($email) 
 	{
-		$result = Model::dbs("SELECT `name`,`verified`,`password`,`token`,`disk_token` FROM `usera` WHERE `email` = '".$email."' LIMIT 1");
-		$rows = $result->fetch_all(MYSQLI_ASSOC);
-		return $rows;
+		$result = $this->li->query("SELECT `name`,`verified`,`password`,`token`,`disk_token` FROM `usera` WHERE `email` = '".$email."' LIMIT 1");
+		return $result->fetch_assoc();
 	}
 	/*
 	 зписывает в базу юзера, выдаёт id
 	*/
-	public static function creat($arr_user)
+	public function creat($arr_user)
 	{
-		return Model::dbin("INSERT INTO `usera` (`name`,`email`,`password`,`token`,`up_creat`) VALUES ('".$arr_user['imia']."','".$arr_user['login']."','".$arr_user['parol']."','".$arr_user['code']."','".date("Y-m-d H:i:s")."')");	
+		$this->li->query("INSERT INTO `usera` (`name`,`email`,`password`,`token`,`up_creat`) VALUES ('".$arr_user['imia']."','".$arr_user['login']."','".$arr_user['parol']."','".$arr_user['code']."','".date("Y-m-d H:i:s")."')");
+		return $this->li->insert_id;
 	}
 	
-	public static function auth_update($email,$code) 
+	public function auth_update($email,$code) 
 	{
-		return Model::dbs("UPDATE `usera` SET `token` = '".$code."',`up_creat` = '".date("Y-m-d H:i:s")."' WHERE `email` = '".$email."'");
+		return $this->li->query("UPDATE `usera` SET `token` = '".$code."',`up_creat` = '".date("Y-m-d H:i:s")."' WHERE `email` = '".$email."'");
 	}
 	
-	public static function verifer_token($id) 
+	public function verifer_token($id) 
 	{
-		$result = Model::dbs("SELECT `token` FROM `usera` WHERE `id` = ".$id." AND `verified` = '0' LIMIT 1");
-		$rows = $result->fetch_all(MYSQLI_ASSOC);
-		return $rows;
+		$result = $this->li->query("SELECT `token` FROM `usera` WHERE `id` = ".$id." AND `verified` = '0' LIMIT 1");
+		return $result->fetch_assoc();;
 	}
 	
-	public static function up_token($id) 
+	public function up_token($id) 
 	{
-		return Model::dbs("UPDATE `usera` SET `verified` = '1' WHERE `id` = ".$id);
+		return $this->li->query("UPDATE `usera` SET `verified` = '1' WHERE `id` = ".$id);
 	}
 	
-	public static function up_pass($password,$email) 
+	public function up_pass($password,$email) 
 	{
-		return Model::dbs("UPDATE `usera` SET `password` = '".$password."' WHERE `email` = '".$email."'");
+		return $this->li->query("UPDATE `usera` SET `password` = '".$password."' WHERE `email` = '".$email."'");
 	}
 
-	public static function disk_token($email,$code) 
+	public function disk_token($email,$code) 
 	{
-		return Model::dbs("UPDATE `usera` SET `disk_token` = '".$code."',`up_creat` = '".date("Y-m-d H:i:s")."' WHERE `email` = '".$email."'");
+		return $this->li->query("UPDATE `usera` SET `disk_token` = '".$code."',`up_creat` = '".date("Y-m-d H:i:s")."' WHERE `email` = '".$email."'");
 	}
 
 }

@@ -4,6 +4,10 @@ namespace Models;
 trait Kursy 
 {
     use Connect;
+    /**
+     * Создаёт массив курсов валют
+     * @return array|bool|string
+     */
     public function kurs(): array|bool|string
     {
         try {
@@ -15,6 +19,11 @@ trait Kursy
         
     }
     
+    /**
+     * Создаёт массив комиссий по id оператора
+     * @param int $id
+     * @return array|bool|string
+     */
     public function  commission($id): array|bool|string
     {
         try {
