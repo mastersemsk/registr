@@ -12,6 +12,7 @@ use FastRoute\RouteCollector;
 
 return function (RouteCollector $r) {
 $r->addRoute('GET', '/', [HomeController::class, 'index']);
+$r->addRoute('GET', '/sota', [HomeController::class, 'test']);
 $r->addRoute('GET', '/kursy', [KursyController::class, 'get_kursy']);
 $r->addRoute('POST', '/pay', [PayController::class, 'pay']);
 $r->addRoute('GET', '/login', [AuthController::class, 'in']);

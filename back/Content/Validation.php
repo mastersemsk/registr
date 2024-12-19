@@ -24,7 +24,7 @@ trait Validation
      * @param int $num
      * @return bool|int
      */
-    public function inNum($num): bool|int
+    public function isNum($num): bool|int
     { 
         return  preg_match('/^[0-9]+$/',$num);
     }
@@ -34,7 +34,7 @@ trait Validation
      * @param string $pattern патерн для проверки
      * @return bool|int
      */
-    public function inStr(string $str, string $pattern): bool|int
+    public function isStr(string $str, string $pattern): bool|int
     {
         return  preg_match($pattern,$str);
         

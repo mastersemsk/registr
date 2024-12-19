@@ -3,18 +3,18 @@ namespace Content;
 
 trait Hash
 {   
-	protected $alphabet = '0123456789_abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	public $alphabet = '0123456789_abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	public $size = 21; //длина строки
-	protected $id;
+	public $id_code;
 	
 	public function code()
 	{
         
 		session_start();
-		while (1 <= self::$size--) {
-		self::$id .= self::$alphabet[random_int(0,63)];
+		while (1 <= $this->$size--) {
+		$this->$id_code .= $this->$alphabet[random_int(0,63)];
 		}
-        $_SESSION['code'] = self::$id;
+        $_SESSION['code'] = $this->$id_code;
 		return $_SESSION['code'];
 	}
 	// проверка пароля

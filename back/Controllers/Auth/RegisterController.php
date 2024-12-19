@@ -70,7 +70,7 @@ class RegisterController extends AppController
 	public function prov_token($id,$token) {
 		//http://e-pos/register/3/HX9yVbNVtICf8qSaIwQ-q
 		$res_token = $this->verifer_token($id);
-		if (empty($res_token) || empty($token) || mb_strlen($token,'UTF-8') != Hash::$size) {
+		if (empty($res_token) || empty($token) || mb_strlen($token,'UTF-8') != $this->size) {
 			 $this->reg('Регистрации не существует или вы уже активировали ссылку');
 		}
 		if (empty($res_token[0]['token']) || $res_token[0]['token'] !== $token) {

@@ -26,7 +26,7 @@ class AuthController extends AppController
 			$this->in('Ошибка ввода e-mail!');
 		}
 		
-		if (empty($this->inStr($_POST['parol'],'/(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/'))) {
+		if (empty($this->isStr($_POST['parol'],'/(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/'))) {
 			
 			$this->in('Пароль от 8 латинских символов, цифры, большие буквы и спец символы.',$_POST['login']);
 		}

@@ -8,8 +8,8 @@ class PayController extends AppController
     use Validation;
     public function pay()
     {
-        if (!empty($this->isSumPay($_POST['summaOplata'])) && !empty($this->inStr($_POST['selectCurrency'], '/^[A-Z]+$/'))
-         && !empty($this->inNum($_POST['operator']))) {
+        if (!empty($this->isSumPay($_POST['summaOplata'])) && !empty($this->isStr($_POST['selectCurrency'], '/^[A-Z]+$/'))
+         && !empty($this->isNum($_POST['operator']))) {
             $oplata = round($_POST['summaOplata'],4); // Сумма валюты оплаты клиентом 
             $currency =  $_POST['selectCurrency']; // код валюты оплаты
             $id = $_POST['operator']; // id оператора для оплаты
