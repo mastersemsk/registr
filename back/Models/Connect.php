@@ -11,7 +11,7 @@ trait Connect
         if(!isset($this->li)) {
             error_reporting(0);
             mysqli_report(MYSQLI_REPORT_OFF);
-            $mysqli = new mysqli('localhost', 'root', 'root', 'laravel');
+            $mysqli = new mysqli('localhost', 'root', 'root', 'baza');
             if ($mysqli->connect_errno) {
                 throw new RuntimeException('ошибка соединения');
             }
