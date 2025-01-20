@@ -1,12 +1,12 @@
 <?php
-class FuncSQL extends mysqli {
+class FuncSQL1 extends mysqli {
 
 protected $result;
 	
 public function __construct() {
 	 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 	 //parent::__construct($host=null, '', '', 'db', $port=null, '/tmp/mysql.sock');
-	 parent::__construct('localhost', '', '', 'laravel', '3306', $socket=null);
+	 parent::__construct('localhost', 'root', 'root', 'baza', '3306', $socket=null);
 	 $this->set_charset("utf8");
 	}
 /*
@@ -15,7 +15,7 @@ public function __construct() {
 mysqli_query() вернёт объект mysqli_result. Для остальных успешных запросов mysqli_query() 
 вернёт true.
 */
-public function query($sql,$result_mode = MYSQLI_STORE_RESULT): mysqli_result|bool {
+public function query($sql,$result_mode = MYSQLI_STORE_RESULT): bool|mysqli_result {
      $this->result = parent::query($sql,$result_mode = MYSQLI_STORE_RESULT) ?? null;
 	 return $this->result;
     }

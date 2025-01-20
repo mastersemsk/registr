@@ -8,10 +8,13 @@ use Controllers\Auth\RegisterController;
 use Controllers\HomeController;
 use Controllers\KursyController;
 use Controllers\PayController;
+use Controllers\OrgController;
 use FastRoute\RouteCollector;
 
 return function (RouteCollector $r) {
 $r->addRoute('GET', '/', [HomeController::class, 'index']);
+$r->addRoute('POST', '/org', [OrgController::class, 'org_api']);
+$r->addRoute('GET', '/org', [OrgController::class, 'index']);
 $r->addRoute('GET', '/sota', [HomeController::class, 'test']);
 $r->addRoute('GET', '/kursy', [KursyController::class, 'get_kursy']);
 $r->addRoute('POST', '/pay', [PayController::class, 'pay']);
